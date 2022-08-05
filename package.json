@@ -1,7 +1,7 @@
 {
   "name": "cypress-real-events-example",
   "version": "1.0.0",
-  "description": "",
+  "description": "Playing with cypress-real-events plugin",
   "private": true,
   "main": "index.js",
   "scripts": {
