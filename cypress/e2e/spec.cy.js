@@ -1,7 +1,7 @@
 import 'cypress-real-events/support'
 
 it(
-  'writes the code snippet to the clipboard',
+  'sends a custom event after clipboard copy',
   { browser: '!firefox', scrollBehavior: 'center' },
   () => {
     cy.visit('dmtrKovalenko/cypress-real-events')
@@ -13,16 +13,20 @@ it(
       cy.window()
         .its('navigator.clipboard')
         .then((clipboard) => {
-          cy.stub(clipboard, 'writeText').as('writeText').resolves()
+          cy.stub(clipboard, 'writeText').resolves()
         })
-      cy.get('[aria-label=Copy]').should('be.visible').click()
-      cy.get('clipboard-copy')
-        .should('have.attr', 'value')
-        .should('be.a', 'string')
-        .and('be.not.empty')
-        .then((code) => {
-          cy.get('@writeText').should('have.been.calledOnceWithExactly', code)
-        })
+      // add your own event listener
+      cy.document().invoke(
+        'addEventListener',
+        'clipboard-copy',
+        // pass Cypress Sinon stub
+        // and give it an alias
+        cy.stub().as('copyEvent'),
+      )
+      cy.get('[aria-label=Copy]').should('be.visible').realClick()
+      // get the stub using the alias
+      // and confirm it was called once
+      cy.get('@copyEvent').should('have.been.calledOnce')
     })
   },
 )
