@@ -1,4 +1,5 @@
 const { defineConfig } = require('cypress')
+const clipboardy = require('clipboardy')
 
 module.exports = defineConfig({
   e2e: {
@@ -10,6 +11,9 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
       // and load any plugins that require the Node environment
+      on('task', {
+        readClipboard: clipboardy.readSync,
+      })
     },
   },
 })
