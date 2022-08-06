@@ -10,14 +10,18 @@ it(
     cy.contains('.snippet-clipboard-content', 'npm install').within(() => {
       cy.get('[aria-label=Copy]').should('not.be.visible')
       cy.root().realHover()
-      cy.get('[aria-label=Copy]').should('be.visible').realClick()
-      cy.get('clipboard-copy').should('have.attr', 'aria-label', 'Copied!')
+      cy.window()
+        .its('navigator.clipboard')
+        .then((clipboard) => {
+          cy.stub(clipboard, 'writeText').as('writeText').resolves()
+        })
+      cy.get('[aria-label=Copy]').should('be.visible').click()
       cy.get('clipboard-copy')
         .should('have.attr', 'value')
         .should('be.a', 'string')
         .and('be.not.empty')
         .then((code) => {
-          cy.task('readClipboard').should('equal', code)
+          cy.get('@writeText').should('have.been.calledOnceWithExactly', code)
         })
     })
   },
