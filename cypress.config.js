@@ -3,7 +3,6 @@ const { defineConfig } = require('cypress')
 module.exports = defineConfig({
   e2e: {
     // baseUrl, etc
-    baseUrl: 'https://github.com',
     supportFile: false,
     fixturesFolder: false,
     viewportHeight: 1000,
